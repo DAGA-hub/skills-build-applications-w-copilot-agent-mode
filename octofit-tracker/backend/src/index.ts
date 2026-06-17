@@ -1,9 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
+import User from "./models/user.js";
+import Team from "./models/team.js";
+import Activity from "./models/activity.js";
+import Workout from "./models/workout.js";
+import Leaderboard from "./models/leaderboard.js";
 
 const app = express();
 const port = 8000;
-const mongoUri = process.env.MONGO_URI ?? "mongodb://127.0.0.1:27017/octofit";
+const mongoUri = process.env.MONGO_URI ?? "mongodb://127.0.0.1:27017/octofit_db";
 
 app.use(express.json());
 
@@ -13,6 +18,31 @@ app.get("/", (_req, res) => {
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
+});
+
+app.get("/users", async (_req, res) => {
+  const users = await User.find().populate("team").lean();
+  res.json(users);
+});
+
+app.get("/teams", async (_req, res) => {
+  const teams = await Team.find().populate("members").lean();
+  res.json(teams);
+});
+
+app.get("/activities", async (_req, res) => {
+  const activities = await Activity.find().populate("user team").lean();
+  res.json(activities);
+});
+
+app.get("/workouts", async (_req, res) => {
+  const workouts = await Workout.find().lean();
+  res.json(workouts);
+});
+
+app.get("/leaderboard", async (_req, res) => {
+  const leaderboard = await Leaderboard.find().populate("team").sort({ rank: 1 }).lean();
+  res.json(leaderboard);
 });
 
 mongoose.connect(mongoUri)
