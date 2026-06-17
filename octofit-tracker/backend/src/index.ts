@@ -5,14 +5,19 @@ import Activity from "./models/activity.ts";
 import Workout from "./models/workout.ts";
 import Leaderboard from "./models/leaderboard.ts";
 import { connectDB } from "./config/database.ts";
+import { getApiBaseUrl } from "./config/api.ts";
+import apiRouter from "./routes/api.ts";
 
 const app = express();
 const port = 8000;
 
 app.use(express.json());
 
+// Mount /api/* routes
+app.use("/api", apiRouter);
+
 app.get("/", (_req, res) => {
-  res.json({ message: "OctoFit Tracker API is running" });
+  res.json({ message: "OctoFit Tracker API is running", apiBaseUrl: getApiBaseUrl() });
 });
 
 app.get("/health", (_req, res) => {
@@ -63,6 +68,8 @@ app.post("/init-populate-octofit_db", async (_req, res) => {
 
 connectDB()
   .then(() => {
+    const apiBaseUrl = getApiBaseUrl();
+    console.log(`API base URL: ${apiBaseUrl}`);
     app.listen(port, () => {
       console.log(`Backend listening on http://0.0.0.0:${port}`);
     });
