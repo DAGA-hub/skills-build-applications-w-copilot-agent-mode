@@ -10,10 +10,14 @@ import Leaderboard from "../models/leaderboard.ts";
 
 const mongoUri = process.env.MONGO_URI ?? "mongodb://127.0.0.1:27017/octofit_db";
 
-async function seed() {
+export default async function seed() {
   console.log("Seed the octofit_db database with test data");
-  await mongoose.connect(mongoUri);
-  console.log(`Connected to MongoDB at ${mongoUri}`);
+
+  const shouldConnect = mongoose.connection.readyState !== 1;
+  if (shouldConnect) {
+    await mongoose.connect(mongoUri);
+    console.log(`Connected to MongoDB at ${mongoUri}`);
+  }
 
   await Promise.all([
     User.deleteMany({}),
@@ -217,11 +221,16 @@ async function seed() {
   console.log(`  activities=${activities.length}`);
   console.log("  leaderboard entries=3");
 
-  await mongoose.disconnect();
-  console.log("Disconnected from MongoDB");
+  if (shouldConnect) {
+    await mongoose.disconnect();
+    console.log("Disconnected from MongoDB");
+  }
 }
 
-seed().catch((error) => {
-  console.error("Seed failed:", error);
-  process.exit(1);
-});
+// If executed directly with node/ts-node, run the seed immediately
+if (import.meta.url === `file://${process.argv[1]}`) {
+  seed().catch((error) => {
+    console.error("Seed failed:", error);
+    process.exit(1);
+  });
+}

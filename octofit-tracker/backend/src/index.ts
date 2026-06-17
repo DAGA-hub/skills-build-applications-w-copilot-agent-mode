@@ -45,6 +45,23 @@ app.get("/leaderboard", async (_req, res) => {
   res.json(leaderboard);
 });
 
+app.post("/init-populate-octofit_db", async (_req, res) => {
+  try {
+    // Dynamically import the seed module so it can be called at runtime
+    const mod = await import("./scripts/seed.ts");
+    const seed = mod.default ?? mod.seed;
+    if (typeof seed !== "function") {
+      return res.status(500).json({ error: "Seed function not found" });
+    }
+
+    await seed();
+    return res.json({ status: "ok", message: "Database seeded" });
+  } catch (err) {
+    console.error("Seed route failed:", err);
+    return res.status(500).json({ error: String(err) });
+  }
+});
+
 mongoose.connect(mongoUri)
   .then(() => {
     console.log(`Connected to MongoDB at ${mongoUri}`);
