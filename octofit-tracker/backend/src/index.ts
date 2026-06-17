@@ -1,10 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
-import User from "./models/user.js";
-import Team from "./models/team.js";
-import Activity from "./models/activity.js";
-import Workout from "./models/workout.js";
-import Leaderboard from "./models/leaderboard.js";
+import User from "./models/user.ts";
+import Team from "./models/team.ts";
+import Activity from "./models/activity.ts";
+import Workout from "./models/workout.ts";
+import Leaderboard from "./models/leaderboard.ts";
 
 const app = express();
 const port = 8000;
