@@ -1,22 +1,20 @@
 /**
  * Seed the octofit_db database with test data
  */
-import mongoose from "mongoose";
+import { connectDB, getMongoose } from "../config/database.ts";
 import User from "../models/user.ts";
 import Team from "../models/team.ts";
 import Activity from "../models/activity.ts";
 import Workout from "../models/workout.ts";
 import Leaderboard from "../models/leaderboard.ts";
 
-const mongoUri = process.env.MONGO_URI ?? "mongodb://127.0.0.1:27017/octofit_db";
-
 export default async function seed() {
   console.log("Seed the octofit_db database with test data");
 
-  const shouldConnect = mongoose.connection.readyState !== 1;
-  if (shouldConnect) {
-    await mongoose.connect(mongoUri);
-    console.log(`Connected to MongoDB at ${mongoUri}`);
+  const mongoose = getMongoose();
+  const wasConnected = mongoose.connection.readyState === 1;
+  if (!wasConnected) {
+    await connectDB();
   }
 
   await Promise.all([
@@ -221,7 +219,7 @@ export default async function seed() {
   console.log(`  activities=${activities.length}`);
   console.log("  leaderboard entries=3");
 
-  if (shouldConnect) {
+  if (!wasConnected) {
     await mongoose.disconnect();
     console.log("Disconnected from MongoDB");
   }
