@@ -7,6 +7,10 @@ Hey DAGA-hub!
 Mona here. I'm done preparing your exercise. Hope you enjoy! 💚
 
 Remember, it's self-paced so feel free to take a break! ☕️
+## Frontend Codespaces setup
 
+- The React frontend uses `import.meta.env.VITE_CODESPACE_NAME` to build the backend API URL.
+- Define `VITE_CODESPACE_NAME` in `.env.local` or set it in your Codespaces environment.
+- When unset, the app falls back to `http://localhost:8000/api`.
 [![](https://img.shields.io/badge/Go%20to%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/DAGA-hub/skills-build-applications-w-copilot-agent-mode/issues/1)
 
